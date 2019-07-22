@@ -66,8 +66,9 @@ class Empty {
 		target3 = kha.Image.createRenderTarget(hw, hh);
     }
 
-	public function render(frame:Framebuffer) {
+	public function render(frames:Array<Framebuffer>) {
 
+		var frame = frames[0];
 		var g = target0.g4;
         g.begin([target1, target2, target3]);
 		g.clear(Color.Black);
