@@ -9,6 +9,7 @@ import kha.graphics4.VertexBuffer;
 import kha.graphics4.IndexBuffer;
 import kha.graphics4.VertexData;
 import kha.graphics4.Usage;
+import kha.graphics4.TextureFormat;
 
 class Empty {
 
@@ -31,7 +32,7 @@ class Empty {
 	var target3:kha.Image;
 
 	public function new() {
-		
+
 		var structure = new VertexStructure();
         structure.add("pos", VertexData.Float3);
         var structureLength = 3;
@@ -39,10 +40,15 @@ class Empty {
 		pipeline.inputLayout = [structure];
 		pipeline.fragmentShader = Shaders.simple_frag;
 		pipeline.vertexShader = Shaders.simple_vert;
+		pipeline.colorAttachmentCount = 4;
+		pipeline.colorAttachments[0] = TextureFormat.RGBA32;
+		pipeline.colorAttachments[1] = TextureFormat.RGBA32;
+		pipeline.colorAttachments[2] = TextureFormat.RGBA32;
+		pipeline.colorAttachments[3] = TextureFormat.RGBA32;
 		pipeline.compile();
 
 		vertexBuffer = new VertexBuffer(Std.int(vertices.length / 3), structure, Usage.StaticUsage);
-		
+
 		var vbData = vertexBuffer.lock();
 		for (i in 0...vbData.length) {
 			vbData.set(i, vertices[i]);
@@ -50,7 +56,7 @@ class Empty {
 		vertexBuffer.unlock();
 
 		indexBuffer = new IndexBuffer(indices.length, Usage.StaticUsage);
-		
+
 		var iData = indexBuffer.lock();
 		for (i in 0...iData.length) {
 			iData[i] = indices[i];
@@ -60,10 +66,10 @@ class Empty {
 		var hw = Std.int(kha.System.windowWidth() / 2);
 		var hh = Std.int(kha.System.windowHeight() / 2);
 
-		target0 = kha.Image.createRenderTarget(hw, hh);
-		target1 = kha.Image.createRenderTarget(hw, hh);
-		target2 = kha.Image.createRenderTarget(hw, hh);
-		target3 = kha.Image.createRenderTarget(hw, hh);
+		target0 = kha.Image.createRenderTarget(hw, hh, TextureFormat.RGBA32);
+		target1 = kha.Image.createRenderTarget(hw, hh, TextureFormat.RGBA32);
+		target2 = kha.Image.createRenderTarget(hw, hh, TextureFormat.RGBA32);
+		target3 = kha.Image.createRenderTarget(hw, hh, TextureFormat.RGBA32);
     }
 
 	public function render(frames:Array<Framebuffer>) {
@@ -82,7 +88,7 @@ class Empty {
 		var hh = kha.System.windowHeight() / 2;
 
 		frame.g2.begin();
-		if (g.renderTargetsInvertedY()){
+		if (kha.Image.renderTargetsInvertedY()){
 			frame.g2.drawScaledImage(target0, 0, hh, hw, -hh);
 			frame.g2.drawScaledImage(target1, hw, hh, hw, -hh);
 			frame.g2.drawScaledImage(target2, 0, hh * 2, hw, -hh);
